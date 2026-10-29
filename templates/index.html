@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Detector - IBM Watson NLP</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+        .container {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 700px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+        }
+        h1 { font-size: 2rem; margin-bottom: 8px; color: #e94560; }
+        p.subtitle { color: #aaa; margin-bottom: 30px; }
+        textarea {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 120px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        textarea:focus { border-color: #e94560; }
+        button {
+            margin-top: 16px;
+            padding: 14px 32px;
+            background: #e94560;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        button:hover { background: #c73652; transform: translateY(-2px); }
+        #result {
+            margin-top: 24px;
+            padding: 20px;
+            background: rgba(255,255,255,0.07);
+            border-radius: 12px;
+            border-left: 4px solid #e94560;
+            font-size: 1rem;
+            line-height: 1.6;
+            display: none;
+        }
+        #result b { color: #e94560; font-size: 1.1rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎭 Emotion Detector</h1>
+        <p class="subtitle">Powered by IBM Watson NLP — Analyze the emotion in any text</p>
+        <textarea id="textToAnalyze" placeholder="Enter text to analyze emotions...&#10;e.g. I am so happy today!"></textarea>
+        <button onclick="analyzeEmotion()">Analyze Emotion</button>
+        <div id="result"></div>
+    </div>
+    <script>
+        function analyzeEmotion() {
+            const text = document.getElementById('textToAnalyze').value.trim();
+            const resultDiv = document.getElementById('result');
+            if (!text) {
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = '⚠️ Invalid text! Please try again!';
+                return;
+            }
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '⏳ Analyzing...';
+            fetch(`/emotionDetector?textToAnalyze=${encodeURIComponent(text)}`)
+                .then(res => res.text())
+                .then(data => {
+                    resultDiv.innerHTML = '📊 ' + data;
+                })
+                .catch(() => {
+                    resultDiv.innerHTML = '❌ Error connecting to the server.';
+                });
+        }
+    </script>
+</body>
+</html>
